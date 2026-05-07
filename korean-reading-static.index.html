@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한국어 리딩 연습</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+:root {
+  --bg: #0e0c0a;
+  --surface: #1a1714;
+  --surface2: #221f1b;
+  --border: #2e2a24;
+  --border-light: #3d3830;
+  --gold: #c9a84c;
+  --gold-dim: #8a6f30;
+  --gold-glow: rgba(201,168,76,0.12);
+  --text: #e8e0d0;
+  --text-dim: #8a8070;
+  --text-muted: #5a5245;
+  --accent: #e07050;
+  --accent-dim: rgba(224,112,80,0.15);
+  --green: #6ab580;
+  --green-dim: rgba(106,181,128,0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 0 1.2rem 5rem; }
+
+header {
+  text-align: center;
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--gold-glow);
+  border: 1px solid var(--gold-dim);
+  border-radius: 2rem;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.logo-dot {
+  width: 5px; height: 5px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+header h1 {
+  font-family: 'DM Serif Display', 'Noto Serif KR', serif;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+
+header h1 em { font-style: italic; color: var(--gold); }
+
+header p {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  font-weight: 300;
+}
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-group { flex: 1; min-width: 130px; }
+
+.filter-group label {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.8rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 2px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a8070'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  cursor: pointer;
+}
+
+select:focus { outline: none; border-color: var(--gold-dim); }
+
+.random-btn {
+  flex-shrink: 0;
+  background: var(--gold);
+  color: #0e0c0a;
+  border: none;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.58rem 1.5rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.random-btn:hover { background: #dbb85a; }
+.random-btn:active { transform: scale(0.97); }
+
+/* ── COUNTER ── */
+.counter {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+  padding-left: 0.2rem;
+}
+
+/* ── ARTICLE CARD ── */
+.article-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  transition: border-color 0.2s;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+.card-header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.card-meta { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+
+.tag {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  padding: 0.18rem 0.55rem;
+  border-radius: 1px;
+  text-transform: uppercase;
+}
+
+.tag-level { background: var(--gold-glow); border: 1px solid var(--gold-dim); color: var(--gold); }
+.tag-theme { background: var(--accent-dim); border: 1px solid rgba(224,112,80,0.3); color: var(--accent); }
+.tag-style { background: rgba(106,181,128,0.1); border: 1px solid rgba(106,181,128,0.25); color: var(--green); }
+
+.card-num {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text);
+  padding: 1.1rem 1.6rem 0.7rem;
+}
+
+.card-title small {
+  display: block;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-weight: 300;
+  margin-top: 0.2rem;
+}
+
+/* ── TTS BAR ── */
+.tts-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.6rem;
+  flex-wrap: wrap;
+}
+
+.tts-btn {
+  background: none; border: none; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; color: var(--text);
+  transition: background 0.15s; flex-shrink: 0;
+}
+
+.tts-btn:hover { background: var(--border-light); }
+
+.tts-btn.play { background: var(--gold); color: #0e0c0a; width: 36px; height: 36px; }
+.tts-btn.play:hover { background: #dbb85a; }
+
+.tts-status { font-size: 0.67rem; color: var(--text-muted); flex: 1; letter-spacing: 0.05em; }
+
+.tts-speed {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.67rem; color: var(--text-muted);
+  margin-left: auto;
+}
+
+.tts-speed input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 65px; height: 3px;
+  background: var(--border-light); border-radius: 2px;
+  outline: none; cursor: pointer;
+}
+
+.tts-speed input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px; height: 11px;
+  background: var(--gold); border-radius: 50%; cursor: pointer;
+}
+
+/* ── KOREAN BODY ── */
+.korean-body {
+  padding: 1rem 1.6rem 1.4rem;
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(0.95rem, 2.5vw, 1.08rem);
+  line-height: 2.3;
+  color: var(--text);
+  word-break: keep-all;
+}
+
+.korean-body p { margin-bottom: 1.1em; }
+.korean-body p:last-child { margin-bottom: 0; }
+
+.korean-body p.speaking {
+  background: rgba(201,168,76,0.07);
+  border-left: 2px solid var(--gold);
+  padding-left: 0.8rem;
+  margin-left: -0.8rem;
+  border-radius: 1px;
+  transition: all 0.2s;
+}
+
+/* ── SECTIONS ── */
+.section-block {
+  border-top: 1px solid var(--border);
+  padding: 1.2rem 1.6rem;
+}
+
+.section-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.9rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 0.55rem;
+}
+
+.vocab-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 0.65rem 0.85rem;
+  border-radius: 2px;
+}
+
+.vocab-kr { font-family:'Noto Serif KR',serif; font-size:0.9rem; color:var(--gold); margin-bottom:0.15rem; font-weight:600; }
+.vocab-jp { font-size:0.7rem; color:var(--text-dim); line-height:1.5; font-weight:300; }
+
+.toggle-btn {
+  background: none;
+  border: 1px solid var(--border-light);
+  color: var(--text-dim);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  margin-bottom: 0.7rem;
+}
+
+.toggle-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+.native-body {
+  background: var(--green-dim);
+  border: 1px solid rgba(106,181,128,0.2);
+  padding: 0.9rem 1.1rem;
+  font-size: 0.77rem;
+  line-height: 1.9;
+  color: #9dd4b0;
+}
+
+.native-body strong {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.native-body ul { padding-left: 1rem; }
+.native-body li { margin-bottom: 0.35rem; }
+.native-body li b { color: #b5e8c5; }
+
+/* ── NO RESULTS ── */
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+}
+
+footer {
+  text-align: center;
+  padding: 2rem 0 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-top: 1rem;
+}
+
+@media (max-width: 500px) {
+  .card-header, .card-title, .korean-body, .section-block { padding-left: 1.1rem; padding-right: 1.1rem; }
+  .tts-bar { padding-left: 1.1rem; padding-right: 1.1rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo-badge"><span class="logo-dot"></span>20 Articles · No Login</div>
+  <h1>한국어<br><em>리딩 연습</em></h1>
+  <p>ネイティブ表現 · 上級リーディング · 音声読み上げ対応</p>
+</header>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <label>テーマ</label>
+    <select id="filter-theme" onchange="renderList()">
+      <option value="all">すべて</option>
+      <option value="일상">일상 · 직장 · 연애</option>
+      <option value="여행">여행 · 카페 · 도시</option>
+      <option value="kpop">K-POP · 드라마 · 덕질</option>
+      <option value="음식">음식 · 요리 · 맛집</option>
+      <option value="계절">계절 · 날씨 · 감성</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>文体</label>
+    <select id="filter-style" onchange="renderList()">
+      <option value="all">すべて</option>
+      <option value="독백">독백체 (独り言)</option>
+      <option value="메시지">친구 메시지체</option>
+      <option value="뉴스">뉴스 · 에세이체</option>
+    </select>
+  </div>
+  <button class="random-btn" onclick="showRandom()">✦ ランダム</button>
+</div>
+
+<div class="counter" id="counter"></div>
+<div id="list"></div>
+
+<footer>한국어 리딩 연습 · 20본 수록 · 음성 읽기 지원</footer>
+</div>
+
+<script>
+const ARTICLES = [
+  {
+    id: 1, theme: "일상", style: "독백", register: "반말",
+    title_kr: "오늘도 그냥 그런 하루",
+    title_jp: "今日もなんとなくそんな一日",
+    paragraphs: [
+      "오늘 하루도 별다를 거 없이 흘러갔다. 아침에 눈 뜨자마자 폰부터 집어 들고, 별 내용도 없는 피드를 한참 보다가 겨우 일어났다. 이게 습관이 돼버린 게 좀 무섭기도 하고.",
+      "점심은 혼자 편의점 도시락. 요즘 들어 혼밥이 전혀 어색하지 않은 게, 좋은 건지 나쁜 건지 모르겠다. 익숙해진다는 게 꼭 좋은 것만은 아니잖아.",
+      "퇴근하고 집에 오니까 아무것도 하기 싫었다. 운동도 가야 하고, 밀린 청소도 해야 하는데 결국 또 소파에 눌러앉았다. 내일의 나한테 전부 미루는 거, 이제 특기가 됐다."
+    ],
+    vocab: [
+      { kr: "겨우", jp: "やっと・ようやく。苦労してようやくというニュアンス" },
+      { kr: "눌러앉다", jp: "どっかり座り込む。動こうとしない様子" },
+      { kr: "내일의 나한테 미루다", jp: "明日の自分に先送りする。SNSで超よく見る表現" }
+    ],
+    native: [
+      { expr: "~이 돼버리다", note: "〜になってしまった。気づいたら習慣化していた残念な感じ" },
+      { expr: "꼭 ~은 아니잖아", note: "必ずしも〜ではないじゃない。独り言で自分に言い聞かせるトーン" },
+      { expr: "이제 특기가 됐다", note: "もう得意技になった。自虐的なユーモアとして使う" }
+    ]
+  },
+  {
+    id: 2, theme: "계절", style: "독백", register: "요체",
+    title_kr: "가을이 오긴 왔나봐요",
+    title_jp: "秋は来たみたいですね",
+    paragraphs: [
+      "어느 순간부터 바람이 달라졌어요. 딱 꼬집어 말하긴 어려운데, 공기가 좀 가벼워진 느낌이랄까요. 여름 내내 지쳐있었는데, 이 바람 한 번에 좀 살 것 같았어요.",
+      "퇴근길에 괜히 한 정거장 먼저 내려서 걸었어요. 이어폰도 안 끼고 그냥 걷는데, 생각보다 나쁘지 않더라고요. 요즘 너무 뭔가를 끊임없이 듣고 보고 있었던 것 같아서, 잠깐이라도 아무것도 안 하는 게 오히려 좋았어요.",
+      "별것도 아닌 산책인데 왜 이렇게 기분이 나아지는지 모르겠어요. 그냥 계절 탓인가봐요, 아마도."
+    ],
+    vocab: [
+      { kr: "~이랄까요", jp: "〜とでも言うか。ぴったりな言葉が見つからないときの表現" },
+      { kr: "여름 내내", jp: "夏の間ずっと。「내내」は期間を通してずっとの意味" },
+      { kr: "계절 탓이다", jp: "季節のせいだ。気分の変化を季節に帰する自然な言い回し" }
+    ],
+    native: [
+      { expr: "살 것 같다", note: "生き返りそう。暑さや疲れが和らいだときの定番表現" },
+      { expr: "괜히", note: "なんとなく・特に理由もなく。衝動的な行動に添える口語" },
+      { expr: "~인가봐요, 아마도", note: "〜みたいですね、たぶん。二重の曖昧さで独り言感が出る" }
+    ]
+  },
+  {
+    id: 3, theme: "일상", style: "메시지", register: "반말",
+    title_kr: "나 고백할까 말까 진짜 모르겠어",
+    title_jp: "告白しようかどうか本当に迷ってる",
+    paragraphs: [
+      "야, 나 요즘 한 사람 때문에 머리가 복잡해. 같은 팀은 아닌데 자주 마주치거든. 딱히 뭔가 있는 것도 아닌데 자꾸 신경 쓰여서 나도 좀 당황스러워.",
+      "저번 주에 같이 점심 먹었는데, 대화가 생각보다 잘 됐어. 근데 그게 그냥 친한 거랑 다른 건지, 내가 혼자 이상하게 받아들이는 건지 구분이 안 돼서.",
+      "고백하면 어색해질까봐 겁나고, 안 하면 계속 이럴 것 같고. 너라면 어떻게 할 것 같아? 진짜 모르겠다, 나."
+    ],
+    vocab: [
+      { kr: "자꾸 신경 쓰이다", jp: "何度も気になってしまう。意志と関係なく気になるニュアンス" },
+      { kr: "혼자 이상하게 받아들이다", jp: "一人で変に受け取る。自分だけ勘違いしてる感じ" },
+      { kr: "너라면 어떻게 할 것 같아", jp: "あなたならどうすると思う？友達に意見を求める定番フレーズ" }
+    ],
+    native: [
+      { expr: "머리가 복잡하다", note: "頭が複雑・頭がごちゃごちゃしてる。悩みが多いときの口語" },
+      { expr: "~까봐 겁나다", note: "〜になりそうで怖い。不安な気持ちの自然な表し方" },
+      { expr: "진짜 모르겠다, 나", note: "本当にわからない、自分。主語を後に持ってくる강조 표현" }
+    ]
+  },
+  {
+    id: 4, theme: "여행", style: "메시지", register: "요체",
+    title_kr: "저 드디어 제주도 다녀왔어요!",
+    title_jp: "ついに済州島行ってきました！",
+    paragraphs: [
+      "저 지난 주말에 제주도 다녀왔어요! 진짜 충동적으로 예약했는데, 이번엔 잘한 것 같아요.",
+      "날씨가 딱 좋았어요. 너무 덥지도 않고, 바람도 적당히 불고. 사람들이 제주 바다는 질리지 않는다고 하던데, 직접 보니까 왜 그런 말 하는지 알겠더라고요. 그냥 멍하니 서 있게 만드는 뭔가가 있어요.",
+      "카페도 몇 군데 갔는데, 서울이랑은 분위기가 확실히 달라요. 뭔가 더 여유롭고, 괜히 오래 앉아있고 싶어지는 느낌? 다음엔 같이 가요, 진짜로요!"
+    ],
+    vocab: [
+      { kr: "충동적으로 예약하다", jp: "衝動的に予約する。SNSの旅行投稿でよく登場" },
+      { kr: "질리지 않다", jp: "飽きない。「질리다」は飽きる・うんざりする" },
+      { kr: "괜히 오래 앉아있고 싶어지다", jp: "なんとなくずっと座っていたくなる" }
+    ],
+    native: [
+      { expr: "이번엔 잘한 것 같아요", note: "今回はよくやったと思います。自分を褒める自然な言い回し" },
+      { expr: "멍하니 서 있게 만들다", note: "ぼーっと立たせてしまう。景色の引力を表す面白い표현" },
+      { expr: "진짜로요", note: "本当に。「진짜」に「요」をつけた강조。念押しのカジュアル表現" }
+    ]
+  },
+  {
+    id: 5, theme: "일상", style: "뉴스",
+    title_kr: "혼자 사는 사람들이 늘고 있다",
+    title_jp: "一人暮らしの人が増えている",
+    paragraphs: [
+      "최근 통계에 따르면 1인 가구 비율이 전체 가구의 30%를 넘어섰다. 특히 20~30대 젊은 층을 중심으로 혼자 사는 생활 방식을 선택하는 사람들이 꾸준히 증가하고 있는 추세다.",
+      "혼자 사는 삶은 자유롭지만, 그만큼 외로움과도 가까워지기 쉽다. 퇴근 후 아무도 없는 집으로 돌아가는 일이 일상이 되면서, '혼밥'과 '혼술'이라는 단어가 이제는 전혀 낯설지 않게 됐다.",
+      "전문가들은 이러한 변화가 단순한 주거 형태의 변화가 아니라, 관계 방식 자체가 달라지고 있다는 신호라고 말한다. 연결되어 있지만 혼자인 시대, 우리는 어떤 관계를 원하는 걸까."
+    ],
+    vocab: [
+      { kr: "~에 따르면", jp: "〜によると。ニュース・レポートの定番表現" },
+      { kr: "꾸준히 증가하는 추세", jp: "着実に増加する傾向。データや統計を説明するときの定型句" },
+      { kr: "낯설지 않다", jp: "見慣れている・馴染みがある。定着を表す表現" }
+    ],
+    native: [
+      { expr: "~을 넘어서다", note: "〜を超える。統計や数値の変化を報告するときの定番動詞" },
+      { expr: "~이 일상이 되다", note: "〜が日常になる。習慣化・社会変化を表すときによく使う" },
+      { expr: "~은 걸까", note: "〜なのだろうか。ニュースやエッセイの締めに使う問いかけの表현" }
+    ]
+  },
+  {
+    id: 6, theme: "kpop", style: "독백", register: "반말",
+    title_kr: "입덕은 항상 갑자기 온다",
+    title_jp: "ハマるのはいつも突然だ",
+    paragraphs: [
+      "진짜 조심한다고 했는데 결국 또 당했다. 알고리즘이 추천해준 영상 하나 클릭했다가, 정신 차려보니 세 시간이 지나있었어. 이게 입덕의 시작인 거 알면서도 멈출 수가 없었다.",
+      "무대 보는 순간 이미 늦었다는 걸 직감했다. 칼군무에 표정 관리까지, 어떻게 저게 사람이지 싶었거든. 덕질하면 돈 나간다는 거 알면서도, 일단 앨범부터 찾아보고 있는 내 모습이 너무 예상 가능해서 웃겼다.",
+      "최애가 생기면 세상이 좀 달라 보이는 게 있어. 피곤한 하루도 공항 직캠 하나면 버텨지는 거, 덕질 안 해본 사람은 모를 거야."
+    ],
+    vocab: [
+      { kr: "입덕", jp: "ハマり始めること。「입문」＋「덕후」の造語でオタク用語の定番" },
+      { kr: "당하다", jp: "やられる・被害にあう。ここでは沼にはまった感じ" },
+      { kr: "최애", jp: "推し。「최고로 사랑하는」の略でK-POP팬 사이에서 필수 어휘" },
+      { kr: "직캠", jp: "個人撮影の動画（直カメ）。特定メンバーだけ追って撮った映像" }
+    ],
+    native: [
+      { expr: "정신 차려보니", note: "気づいたら・我に返ったら。時間が経っていたときの定番표현" },
+      { expr: "칼군무", note: "切れのあるそろったダンス。「칼」（刃）＋「군무」の造語" },
+      { expr: "어떻게 저게 사람이지", note: "どうしたらあんな人間がいるんだ。感嘆・称賛の강조 표현" }
+    ]
+  },
+  {
+    id: 7, theme: "음식", style: "독백", register: "요체",
+    title_kr: "맛집 줄서기, 해볼 만한가요",
+    title_jp: "人気店で行列、やってみる価値ある？",
+    paragraphs: [
+      "오늘 점심에 유명하다는 라멘집 앞에서 40분을 기다렸어요. 솔직히 중간에 몇 번이나 그냥 갈까 싶었는데, 앞에 사람들이 꿋꿋이 서있으니까 괜히 오기가 생기더라고요.",
+      "막상 먹어보니까, 맛있긴 했어요. 근데 40분을 기다릴 만큼이었냐고 물어보면… 솔직히 잘 모르겠어요. 배가 고파서 더 맛있게 느껴진 건지, 기다린 보람을 스스로 만들어낸 건지.",
+      "그래도 기다리면서 옆 사람이랑 괜히 메뉴 얘기 나눈 것도 있고, 나름 나쁘지 않았어요. 맛집 줄서기의 반은 음식이고, 반은 그 과정인 것 같기도 해요."
+    ],
+    vocab: [
+      { kr: "오기가 생기다", jp: "意地になる・やり遂げたくなる。負けたくない気持ちが出てくる" },
+      { kr: "막상 ~보니까", jp: "いざ〜してみると。期待と実際のギャップを語るときの定番" },
+      { kr: "기다린 보람을 만들어내다", jp: "待った甲斐を自分で作り出す。自分を納得させる심리 표현" }
+    ],
+    native: [
+      { expr: "꿋꿋이", note: "じっと・粘り強く。諦めずにいる様子の副詞" },
+      { expr: "~만큼이었냐", note: "〜するほどだったか。価値判断を問い直す口語的표현" },
+      { expr: "나름 나쁘지 않다", note: "それなりに悪くない。完璧ではないけど満足という微妙なニュアンス" }
+    ]
+  },
+  {
+    id: 8, theme: "일상", style: "메시지", register: "반말",
+    title_kr: "나 오늘 팀장한테 좀 혼났어",
+    title_jp: "今日チームリーダーにちょっと叱られた",
+    paragraphs: [
+      "야 나 오늘 팀장한테 피드백인지 잔소리인지 모를 거 한 20분 들었어. 내용은 맞는 말인데 듣는 내내 좀 힘들었다. 틀린 말이 아니니까 반박도 못 하고 그냥 네네 하고 있었는데, 그게 더 지치더라고.",
+      "근데 그것보다 더 별로였던 건, 옆에서 팀원들이 다 듣고 있었다는 거야. 따로 불러서 얘기하면 안 됐나, 진짜. 얼굴이 빨개지는 거 느꼈는데 티 안 나려고 엄청 애썼어.",
+      "퇴근하고 나서도 계속 생각나서 기분이 영 찝찝했어. 너도 이런 거 있잖아, 집에 와서도 계속 머릿속에서 재생되는 거. 어떻게 하면 빨리 잊을 수 있어?"
+    ],
+    vocab: [
+      { kr: "네네 하고 있다", jp: "はいはいと言い続ける。同意するしかない状況の口語的描写" },
+      { kr: "티 안 나려고 애쓰다", jp: "バレないように必死になる。感情を隠そうとする努力" },
+      { kr: "찝찝하다", jp: "もやもやする・すっきりしない。後悔や不快感が残る感覚" }
+    ],
+    native: [
+      { expr: "피드백인지 잔소리인지", note: "フィードバックなのか小言なのか。曖昧な状況をそのまま言葉にする표현" },
+      { expr: "영 ~하다", note: "どうも〜だ・まったく〜だ。否定的な감정을 강조하는 부사" },
+      { expr: "머릿속에서 재생되다", note: "頭の中で再生される。嫌な記憶がループするときの口語的표현" }
+    ]
+  },
+  {
+    id: 9, theme: "kpop", style: "메시지", register: "요체",
+    title_kr: "이 드라마 저만 보고 있는 건가요?",
+    title_jp: "このドラマ私だけ見てるんですか？",
+    paragraphs: [
+      "혹시 요즘 〈나의 해방일지〉 보고 계세요? 저 뒤늦게 정주행 시작했는데, 진짜 생각보다 너무 좋아요. 막 화려하거나 자극적인 게 없는데, 어느 순간부터 멈추기가 어렵더라고요.",
+      "대사가 특히 좋아요. 일상적인 말인데 왜 이렇게 마음에 콕 박히는지 모르겠어요. 보다 보면 나도 모르게 공감하고 있고, 어떤 장면에서는 괜히 울컥하기도 했어요.",
+      "드라마 보면서 이렇게 조용히 위로받은 게 오랜만인 것 같아요. 아직 안 보셨으면 진짜 추천드려요. 저한테 나중에 감사하실 거예요!"
+    ],
+    vocab: [
+      { kr: "정주행", jp: "一気見・最初から順番に全部見ること。動画コンテンツ関連の必須語彙" },
+      { kr: "마음에 콕 박히다", jp: "心にぐさっと刺さる。印象的な言葉や場面に使う표현" },
+      { kr: "울컥하다", jp: "こみ上げてくる・胸が詰まる。涙が出そうになる감각의 구어 표현" }
+    ],
+    native: [
+      { expr: "막 ~한 게 없는데", note: "特に〜なものはないのに。地味な作品を説明するときの口語" },
+      { expr: "어느 순간부터", note: "ある瞬間から。気づいたら変わっていたという変化의 표현" },
+      { expr: "저한테 나중에 감사하실 거예요", note: "後で私に感謝しますよ。おすすめするときの自信ある締め表現" }
+    ]
+  },
+  {
+    id: 10, theme: "음식", style: "뉴스",
+    title_kr: "한국의 '배달 문화'는 어디까지 왔나",
+    title_jp: "韓国の「デリバリー文化」はどこまで来たか",
+    paragraphs: [
+      "한국의 배달 앱 시장은 세계적으로도 손꼽히는 규모로 성장했다. 비 오는 날 치킨 한 마리를 시켜 먹는 것이 하나의 문화로 자리 잡은 지 오래고, 이제는 커피 한 잔, 편의점 간식까지 배달로 해결하는 시대가 됐다.",
+      "편리함의 이면에는 물론 그늘도 있다. 배달 용기로 인한 쓰레기 문제, 라이더들의 처우 문제 등 해결해야 할 과제도 적지 않다. 빠르고 편리한 것에 익숙해진 만큼, 그 속도를 떠받치는 사람들에 대한 관심도 함께 필요하다는 목소리가 높아지고 있다.",
+      "음식 하나를 주문하는 행위 속에, 생각보다 많은 것들이 얽혀 있다."
+    ],
+    vocab: [
+      { kr: "손꼽히다", jp: "指折り数えられる・トップクラスに入る。ランキングを表현할 때 자주 씀" },
+      { kr: "자리 잡다", jp: "定着する・根付く。文化や習慣が社会に浸透した状態" },
+      { kr: "이면에는 그늘도 있다", jp: "裏には影もある。物事の負の側面を指摘するときの表현" }
+    ],
+    native: [
+      { expr: "~인 지 오래다", note: "〜になってずいぶん経つ。定着を強調する문어체 표현" },
+      { expr: "~에 익숙해진 만큼", note: "〜に慣れた分だけ。比例関係を示す接続表現" },
+      { expr: "목소리가 높아지다", note: "声が高まる・声が大きくなる。意見・要求が広まる社会的な表현" }
+    ]
+  },
+  {
+    id: 11, theme: "여행", style: "독백", register: "반말",
+    title_kr: "혼자 떠난 여행에서 배운 것",
+    title_jp: "一人旅で学んだこと",
+    paragraphs: [
+      "혼자 여행은 처음이라 솔직히 좀 걱정됐다. 밥은 어떻게 먹지, 심심하면 어떡하지. 근데 막상 가보니까 그런 걱정이 다 쓸데없었다.",
+      "혼자니까 오히려 좋았던 게, 아무 계획 없이 걸어다닐 수 있다는 거였어. 누군가와 맞춰야 할 필요가 없으니까, 저 골목 좋아 보인다 싶으면 그냥 들어가면 되고. 그 자유로움이 생각보다 훨씬 좋았다.",
+      "낯선 카페에서 혼자 앉아서 창밖 보고 있는데, 이상하게 외롭지가 않았어. 오히려 오랜만에 나 자신이랑 제대로 있는 느낌? 다음에도 혼자 떠나고 싶다."
+    ],
+    vocab: [
+      { kr: "쓸데없다", jp: "無駄だ・意味がない。心配や行動が無駄だったときに使う口語" },
+      { kr: "맞추다", jp: "合わせる。他人に合わせる・調整するという意味でよく使う" },
+      { kr: "나 자신이랑 제대로 있다", jp: "自分自身とちゃんと向き合う。一人の時間を肯定的に표현" }
+    ],
+    native: [
+      { expr: "~니까 오히려 좋다", note: "〜だからこそむしろいい。逆説的な発見を語るときの표현" },
+      { expr: "저 ~ 좋아 보인다 싶으면", note: "あの〜よさそうだと思ったら。瞬間的な判断の自然な言い方" },
+      { expr: "이상하게 외롭지가 않다", note: "不思議と寂しくない。予想と違う感情への気づきの표현" }
+    ]
+  },
+  {
+    id: 12, theme: "일상", style: "독백", register: "요체",
+    title_kr: "좋아하는 사람이 생겼어요",
+    title_jp: "好きな人ができました",
+    paragraphs: [
+      "요즘 이상하게 아침에 눈이 더 잘 떠지는 것 같아요. 딱히 이유가 없는데, 하루가 좀 기대되는 느낌이랄까요. 아, 이유가 없는 건 아닌가요. 사실 좋아하는 사람이 생겼거든요.",
+      "대단한 게 있어서가 아니에요. 그냥 같이 있으면 편하고, 웃긴 얘기 하면 같이 웃고, 그런 게 좋은 거잖아요. 근데 그 사람 생각이 자꾸 나는 걸 보면, 저한테는 대단한 사람인가봐요.",
+      "고백은 아직 못 하겠어요. 지금 이 설레는 기분이 좋기도 하고, 괜히 말했다가 어색해질까봐요. 좀 더 지켜봐야 할 것 같아요."
+    ],
+    vocab: [
+      { kr: "하루가 기대되다", jp: "一日が楽しみになる。好きな人ができたときの気持ちの自然な表현" },
+      { kr: "~인가봐요", jp: "〜みたいですね。自分のことを少し客観的に気づく柔らかい표현" },
+      { kr: "설레다", jp: "ときめく・わくわくする。恋愛文맥에서 가장 많이 쓰이는 감정 동사" }
+    ],
+    native: [
+      { expr: "아, 이유가 없는 건 아닌가요", note: "あ、理由がないわけでもないですね。独り言で自己ツッコミを入れる표현" },
+      { expr: "대단한 게 있어서가 아니에요", note: "特別なことがあるからじゃないです。恋愛감정을 謙遜하며 설명하는 방식" },
+      { expr: "좀 더 지켜봐야 할 것 같다", note: "もう少し様子を見たほうがよさそう。결론을 출쪽 미루는 柔らかい言い方" }
+    ]
+  },
+  {
+    id: 13, theme: "계절", style: "메시지", register: "반말",
+    title_kr: "오늘 하늘 봤어?",
+    title_jp: "今日空見た？",
+    paragraphs: [
+      "야 오늘 하늘 진짜 예쁘지 않았어? 퇴근하다가 문득 고개 들었는데 노을이 너무 예뻐서 나도 모르게 멈췄다. 요즘 하도 땅만 보고 다녀서, 하늘이 저렇게 생겼었나 싶었어.",
+      "사진 찍으려고 폰 꺼냈는데, 막상 찍으니까 실제로 본 것만 못하더라. 그냥 눈에 담아두는 게 나을 것 같아서 그냥 서서 한참 봤어.",
+      "별거 아닌 하늘인데, 왜 그런 순간에는 괜히 감성 충만해지는 거 있잖아. 너도 오늘 같은 하늘 봤으면 좋겠다 싶었어. 다음엔 같이 저녁 산책이나 하자."
+    ],
+    vocab: [
+      { kr: "문득", jp: "ふと・不意に。突然何かに気づいたり感じたりする瞬간에 사용" },
+      { kr: "눈에 담다", jp: "目に焼き付ける。写真ではなく記憶に残すという詩的な표현" },
+      { kr: "감성 충만해지다", jp: "感性があふれる・エモくなる。SNSで頻出するカジュアルな표현" }
+    ],
+    native: [
+      { expr: "하도 ~해서", note: "あまりにも〜するので。程度が激しいことを表す口語강조 부사" },
+      { expr: "~이 저렇게 생겼었나", note: "〜はあんな見た目だったっけ。久々に気づいたときの独り言" },
+      { expr: "~이 좋겠다 싶다", note: "〜だといいなと思う。友達を思いやる気持ちの자연스러운 표현" }
+    ]
+  },
+  {
+    id: 14, theme: "일상", style: "메시지", register: "요체",
+    title_kr: "저 이직 고민 중이에요",
+    title_jp: "転職を考え中なんです",
+    paragraphs: [
+      "사실 요즘 이직 고민을 좀 하고 있어요. 딱히 지금 회사가 너무 힘든 건 아닌데, 그렇다고 딱히 만족스럽지도 않아서요. 이도 저도 아닌 느낌이 오히려 더 애매하더라고요.",
+      "주변에 물어보면 다들 지금 시기가 좋지 않다, 좀 더 다녀봐라 하는데, 그 말이 맞는 건지 아니면 그냥 현실에 안주하는 건지 구분이 잘 안 돼요. 저만 이런 고민 하는 건 아니죠?",
+      "일단 이력서부터 한번 정리해볼까 생각 중이에요. 실제로 움직일지는 모르겠지만, 뭔가 해보는 것 자체가 기분 전환이 될 것 같기도 하고요. 혹시 이직 경험 있으세요?"
+    ],
+    vocab: [
+      { kr: "이도 저도 아니다", jp: "どっちつかず・中途半端。二択のどちらでもない曖昧な状態" },
+      { kr: "현실에 안주하다", jp: "現状に甘んじる。自己批判的な文맥에서 자주 등장" },
+      { kr: "기분 전환이 되다", jp: "気分転換になる。行動의 동기로 자연스럽게 쓰이는 표현" }
+    ],
+    native: [
+      { expr: "딱히 ~은 아닌데, ~도 아니다", note: "特に〜でもないけど〜でもない。どちらでもない状況의 自然な言い方" },
+      { expr: "저만 이런 고민 하는 건 아니죠?", note: "私だけこんな悩みしてるんじゃないですよね？共感を求める투の표현" },
+      { expr: "일단 ~부터", note: "まず〜から。大きな決断の前の小さな一歩を表す口語 패턴" }
+    ]
+  },
+  {
+    id: 15, theme: "여행", style: "뉴스",
+    title_kr: "외국인들이 서울에서 찾는 것",
+    title_jp: "外国人がソウルで求めるもの",
+    paragraphs: [
+      "최근 몇 년 사이, 서울을 찾는 외국인 관광객의 발길이 눈에 띄게 달라졌다. 경복궁이나 남산타워 같은 전통적인 명소뿐 아니라, 성수동 골목이나 망원동 로컬 카페처럼 '현지인의 일상'을 경험하려는 여행자들이 늘고 있다.",
+      "SNS의 영향도 크다. 인스타그램이나 틱톡에서 화제가 된 장소는 하룻밤 사이에 줄 서는 명소가 되기도 한다. 이른바 '핫플'을 찾아다니는 여행 문화는 이제 나이와 국적을 가리지 않는다.",
+      "여행의 목적이 '보는 것'에서 '경험하는 것'으로 바뀌고 있다. 서울이라는 도시가 가진 빠른 변화의 속도가, 오히려 외국인들에게는 매력으로 다가오는 모양이다."
+    ],
+    vocab: [
+      { kr: "눈에 띄게", jp: "目に見えて・明らかに。変化が顕著なときに使う副詞" },
+      { kr: "이른바", jp: "いわゆる。一般的に広まっている呼び名を紹介するときの표현" },
+      { kr: "~인 모양이다", jp: "〜のようだ・〜らしい。観察から導いた柔らかい推測を表현" }
+    ],
+    native: [
+      { expr: "발길이 달라지다", note: "足取りが変わる・訪れ方が変わる。観光トレンドの変化를 표현" },
+      { expr: "하룻밤 사이에", note: "一晩のうちに。急激な変化を강조하는 시간 표현" },
+      { expr: "나이와 국적을 가리지 않다", note: "年齢と国籍を問わない。幅広い층에 広まっていることの表현" }
+    ]
+  },
+  {
+    id: 16, theme: "kpop", style: "독백", register: "요체",
+    title_kr: "콘서트 다녀온 날 밤",
+    title_jp: "コンサートに行った夜",
+    paragraphs: [
+      "오늘 콘서트 다녀왔어요. 집에 오는 길에 아직도 심장이 두근거리는 게, 몸은 피곤한데 기분은 이상하게 고양돼있어요. 이 느낌, 좋아하는 사람들은 알 것 같아요.",
+      "공연 중간에 멤버가 객석 쪽 보면서 웃었는데, 분명 나 보고 웃은 거 아닌 거 알면서도 순간 심장이 내려앉았어요. 이게 덕질의 묘미인가봐요. 이성적으로는 알고 있어도, 감정이 먼저 반응하는 거요.",
+      "끝나고 나오면서 괜히 허전한 것도 있었어요. 그 두 시간이 너무 꽉 차있었던 건지, 끝나고 나면 항상 이 공허함이 있더라고요. 근데 그래도 또 가고 싶어요, 이미."
+    ],
+    vocab: [
+      { kr: "고양되다", jp: "高揚する・気分が盛り上がる。흥분보다 약간 문학적인 뉘앙스" },
+      { kr: "심장이 내려앉다", jp: "心臓がどきっとする・ヒヤッとする。놀람과 설렘 양쪽에 사용" },
+      { kr: "덕질의 묘미", jp: "推し活の醍醐味。「묘미」は奥深い味わい・醍醐味의 뜻" }
+    ],
+    native: [
+      { expr: "이 느낌, ~은 알 것 같아요", note: "この感じ、〜はわかると思います。共感を誘う独り言的な투" },
+      { expr: "꽉 차있다", note: "ぎっしり詰まっている。時間や内容が濃いという표현" },
+      { expr: "또 가고 싶어요, 이미", note: "もう行きたいです、すでに。「이미」を後ろに置く강조 패턴" }
+    ]
+  },
+  {
+    id: 17, theme: "음식", style: "메시지", register: "반말",
+    title_kr: "나 요리 입문했어",
+    title_jp: "料理始めたよ",
+    paragraphs: [
+      "야 나 요즘 요리 배우기 시작했어. 갑자기 왜냐고? 나도 몰라, 그냥 유튜브 보다가 쉬워 보여서 따라했는데 생각보다 재밌더라고.",
+      "첫 번째로 만든 게 계란볶음밥인데, 진짜 별거 아닌 것 같아도 막상 해보면 불 조절이 생각보다 어렵더라. 그래도 내가 만든 거 먹는 게 묘하게 뿌듯했어. 맛은 그냥 그랬는데 왜인지 맛있게 느껴지는 거 있잖아.",
+      "이제 목표가 생겼어. 한 달 안에 친구 불러서 밥 한번 해주는 거. 너 1순위야, 일단은. 기대해도 돼, 아마도."
+    ],
+    vocab: [
+      { kr: "불 조절", jp: "火加減。料理の基本として会話でよく出る표현" },
+      { kr: "묘하게 뿌듯하다", jp: "不思議と達成感がある。「묘하게」は「なぜか・不思議と」의 뜻" },
+      { kr: "기대해도 돼, 아마도", jp: "期待していいよ、たぶん。「아마도」を足すことで自信なさげなユーモアが出る" }
+    ],
+    native: [
+      { expr: "갑자기 왜냐고? 나도 몰라", note: "突然なんでかって？自分もわからない。自問自答의 친구 메시지 패턴" },
+      { expr: "생각보다 재밌더라고", note: "思ったより面白かった。やってみた発見を友達に伝える定番표현" },
+      { expr: "너 1순위야, 일단은", note: "あなたが1番目だよ、とりあえず。「일단은」で少し保留感を出す ユーモア" }
+    ]
+  },
+  {
+    id: 18, theme: "계절", style: "메시지", register: "요체",
+    title_kr: "겨울 오기 전에 하고 싶은 것들",
+    title_jp: "冬が来る前にやりたいこと",
+    paragraphs: [
+      "요즘 날씨 보니까 이제 진짜 겨울이 얼마 안 남은 것 같아요. 추워지기 전에 하고 싶은 것들이 갑자기 막 생각나서요.",
+      "일단 단풍 보러 한번 가고 싶어요. 매년 가야지 하다가 시기 놓치거든요. 올해는 진짜로 가보려고요. 그리고 노상 카페에서 따뜻한 거 마시면서 책 읽는 것도 해보고 싶고, 야시장 같은 것도 한번 가보고 싶고.",
+      "생각해보면 별거 아닌 것들인데, 막상 겨울 되면 다 귀찮아질 것 같아서요. 지금 이 계절이 있을 때 부지런히 움직여야 할 것 같아요. 같이 갈 사람 구하는 중인데, 혹시 시간 되세요?"
+    ],
+    vocab: [
+      { kr: "시기를 놓치다", jp: "タイミングを逃す。毎年やろうとして逃すパターンの표현" },
+      { kr: "노상 카페", jp: "路上カフェ・オープンカフェ。屋外席のあるカフェを指す" },
+      { kr: "부지런히 움직이다", jp: "せっせと動く・こまめに行動する。「부지런하다」は勤勉・まめの意味" }
+    ],
+    native: [
+      { expr: "갑자기 막 생각나다", note: "急にぼんぼん思い浮かぶ。「막」が連続・一気にのニュアンスを加える" },
+      { expr: "매년 ~하다가 시기 놓치다", note: "毎年〜しようとしてタイミングを逃す。誰もが共감する 패턴" },
+      { expr: "같이 갈 사람 구하는 중이에요", note: "一緒に行く人を探し中です。さりげなく誘う메시지의 정석 마무리" }
+    ]
+  },
+  {
+    id: 19, theme: "kpop", style: "뉴스",
+    title_kr: "K-POP은 왜 계속 커지는 걸까",
+    title_jp: "K-POPはなぜ成長し続けるのか",
+    paragraphs: [
+      "K-POP이 글로벌 시장에서 차지하는 비중은 해마다 커지고 있다. 단순히 음악이 좋아서라는 설명만으로는 부족할 만큼, 그 영향력은 음악을 넘어 패션, 뷰티, 언어 학습까지 뻗어나가고 있다.",
+      "전문가들은 K-POP의 성공 요인으로 철저한 트레이닝 시스템과 SNS를 활용한 팬과의 소통 방식을 꼽는다. 특히 아티스트가 팬과 직접 소통하는 문화는 다른 나라 팝 시장에서는 보기 드문 방식이다.",
+      "한편으로는 이 성장이 지속 가능한지에 대한 물음도 나온다. 콘텐츠의 과잉 공급, 아티스트의 혹독한 스케줄 등 산업 구조에 대한 비판도 여전히 존재한다. 빠르게 커온 만큼, 이제는 깊이를 고민할 때라는 목소리도 있다."
+    ],
+    vocab: [
+      { kr: "비중을 차지하다", jp: "比重を占める。シェアや割合を語るときの定番표현" },
+      { kr: "~을 꼽다", jp: "〜を挙げる・選び出す。理由や요인을 열거할 때 사용" },
+      { kr: "지속 가능하다", jp: "持続可能だ。社会・경제 문맥에서 자주 등장하는 표현" }
+    ],
+    native: [
+      { expr: "~만으로는 부족할 만큼", note: "〜だけでは足りないほど。강조와 함께 설명을 확장하는 接続表현" },
+      { expr: "보기 드문 방식", note: "なかなか見られない方式。珍しさを客観的に表현하는 뉴스 표현" },
+      { expr: "한편으로는", note: "一方では。前の内容に対比・留保を加えるときのニュース定番표현" }
+    ]
+  },
+  {
+    id: 20, theme: "일상", style: "뉴스",
+    title_kr: "번아웃 시대, 쉬는 것도 연습이 필요하다",
+    title_jp: "バーンアウトの時代、休むことも練習が必要だ",
+    paragraphs: [
+      "현대인의 번아웃이 더 이상 특별한 일이 아니게 됐다. 직장인 10명 중 7명이 번아웃을 경험한 적 있다는 설문 결과가 나올 만큼, 만성적인 피로와 무기력감은 일상의 일부가 됐다.",
+      "문제는 쉬어야 한다는 걸 알면서도, 제대로 쉬는 방법을 모르는 사람이 많다는 점이다. 눈은 쉬고 있지만 머릿속은 내일 할 일로 가득 차 있거나, 쉬는 시간에도 생산적이어야 한다는 압박을 느끼는 경우가 적지 않다.",
+      "전문가들은 진짜 휴식이란 아무것도 하지 않는 것에 대한 죄책감을 내려놓는 것에서 시작된다고 말한다. 잘 쉬는 것도 하나의 능력이고, 그건 연습이 필요한 일이라고."
+    ],
+    vocab: [
+      { kr: "번아웃", jp: "バーンアウト・燃え尽き症候群。현대 직장인 문맥에서 일상적으로 사용" },
+      { kr: "만성적인 피로", jp: "慢性的な疲労。뉴스·에세이에서 자주 등장하는 조합" },
+      { kr: "죄책감을 내려놓다", jp: "罪悪感を手放す。心理・자기계발 문맥에서 자주 쓰이는 표현" }
+    ],
+    native: [
+      { expr: "더 이상 ~이 아니게 됐다", note: "もはや〜ではなくなった。社会변화를 端的に表현する뉴스 패턴" },
+      { expr: "~을 알면서도", note: "〜とわかっていながら。知っているのにできないジレンマの표현" },
+      { expr: "~이라고", note: "〜だと（いうことだ）。専門家의 말을 引用して締める뉴스 정형구" }
+    ]
+  }
+];
+
+// ── TTS STATE ──
+let ttsParas = [], ttsIdx = 0, ttsPaused = false, ttsActive = false, ttsVoice = null, ttsCardId = null;
+
+function initVoice() {
+  const vs = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  ttsVoice = vs.find(v => v.lang === 'ko-KR') || vs.find(v => v.lang.startsWith('ko')) || null;
+}
+if (window.speechSynthesis) { window.speechSynthesis.onvoiceschanged = initVoice; initVoice(); }
+
+function ttsToggle(cardId) {
+  if (!window.speechSynthesis) return;
+  if (ttsActive && ttsCardId === cardId) {
+    if (!ttsPaused) {
+      window.speechSynthesis.pause(); ttsPaused = true;
+      document.getElementById('play-' + cardId).textContent = '▶';
+      document.getElementById('st-' + cardId).textContent = '一時停止中';
+    } else {
+      window.speechSynthesis.resume(); ttsPaused = false;
+      document.getElementById('play-' + cardId).textContent = '⏸';
+    }
+    return;
+  }
+  ttsStopAll();
+  ttsCardId = cardId;
+  ttsParas = Array.from(document.querySelectorAll('#body-' + cardId + ' p[data-pi]'));
+  ttsIdx = 0; ttsActive = true; ttsPaused = false;
+  initVoice(); ttsNext(cardId);
+}
+
+function ttsNext(cardId) {
+  if (ttsIdx >= ttsParas.length) { ttsStopAll(); document.getElementById('st-' + cardId).textContent = '✓ 完了'; return; }
+  const el = ttsParas[ttsIdx];
+  document.querySelectorAll('#body-' + cardId + ' p').forEach(p => p.classList.remove('speaking'));
+  el.classList.add('speaking');
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const rate = parseFloat(document.getElementById('rate-' + cardId)?.value || '0.85');
+  const u = new SpeechSynthesisUtterance(el.innerText);
+  u.lang = 'ko-KR'; u.rate = rate; u.pitch = 1.0;
+  if (ttsVoice) u.voice = ttsVoice;
+  document.getElementById('st-' + cardId).textContent = `読み上げ中 ${ttsIdx + 1}/${ttsParas.length}`;
+  document.getElementById('play-' + cardId).textContent = '⏸';
+  u.onend = () => { if (!ttsPaused) { ttsIdx++; ttsNext(cardId); } };
+  u.onerror = () => { ttsIdx++; ttsNext(cardId); };
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+function ttsStop(cardId) {
+  window.speechSynthesis.cancel();
+  ttsActive = false; ttsPaused = false; ttsIdx = 0; ttsCardId = null;
+  document.querySelectorAll('#body-' + cardId + ' p').forEach(p => p.classList.remove('speaking'));
+  document.getElementById('play-' + cardId).textContent = '▶';
+  document.getElementById('st-' + cardId).textContent = '▶ で読み上げ開始';
+}
+
+function ttsStopAll() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  ttsActive = false; ttsPaused = false; ttsIdx = 0;
+  document.querySelectorAll('.korean-body p.speaking').forEach(p => p.classList.remove('speaking'));
+  document.querySelectorAll('.tts-btn.play').forEach(b => b.textContent = '▶');
+  document.querySelectorAll('.tts-status').forEach(s => s.textContent = '▶ で読み上げ開始');
+}
+
+function updateRate(el, cardId) {
+  const v = parseFloat(el.value).toFixed(2);
+  document.getElementById('rv-' + cardId).textContent = v + '×';
+  if (ttsActive && ttsCardId === cardId && !ttsPaused) { window.speechSynthesis.cancel(); ttsNext(cardId); }
+}
+
+// ── FILTER + RENDER ──
+function getFiltered() {
+  const th = document.getElementById('filter-theme').value;
+  const st = document.getElementById('filter-style').value;
+  return ARTICLES.filter(a => {
+    const themeOk = th === 'all' || a.theme === th || (th === 'kpop' && a.theme === 'kpop');
+    const styleOk = st === 'all' || a.style === st;
+    return themeOk && styleOk;
+  });
+}
+
+function showRandom() {
+  document.getElementById('filter-theme').value = 'all';
+  document.getElementById('filter-style').value = 'all';
+  const all = ARTICLES;
+  const pick = all[Math.floor(Math.random() * all.length)];
+  ttsStopAll();
+  const list = document.getElementById('list');
+  list.innerHTML = buildCard(pick);
+  document.getElementById('counter').textContent = `ランダム表示中 · 全${all.length}本`;
+}
+
+function renderList() {
+  ttsStopAll();
+  const filtered = getFiltered();
+  document.getElementById('counter').textContent = `${filtered.length}本 表示中`;
+  if (!filtered.length) {
+    document.getElementById('list').innerHTML = '<div class="no-results">該当する文章がありません</div>';
+    return;
+  }
+  document.getElementById('list').innerHTML = filtered.map(a => buildCard(a)).join('');
+}
+
+function buildCard(a) {
+  const styleLabel = a.style === '독백' ? '독백체' : a.style === '메시지' ? '메시지체' : '뉴스/에세이';
+  const themeLabel = {일상:'일상·직장·연애',여행:'여행·카페',kpop:'K-POP·덕질',음식:'음식·요리',계절:'계절·감성'}[a.theme] || a.theme;
+  const regTag = a.register ? `<span class="tag tag-style">${a.register === '반말' ? 'ため口' : '요체'}</span>` : '';
+  const parasHTML = a.paragraphs.map((p, i) => `<p data-pi="${i}">${p}</p>`).join('');
+  const vocabHTML = a.vocab.map(v => `<div class="vocab-item"><div class="vocab-kr">${v.kr}</div><div class="vocab-jp">${v.jp}</div></div>`).join('');
+  const nativeHTML = a.native.map(n => `<li><b>${n.expr}</b> — ${n.note}</li>`).join('');
+
+  return `
+  <div class="article-card" id="card-${a.id}">
+    <div class="card-header">
+      <div class="card-meta">
+        <span class="tag tag-level">上級</span>
+        <span class="tag tag-theme">${themeLabel}</span>
+        <span class="tag tag-style">${styleLabel}</span>
+        ${regTag}
+      </div>
+      <span class="card-num">#${String(a.id).padStart(2,'0')}</span>
+    </div>
+    <div class="card-title">${a.title_kr}<small>${a.title_jp}</small></div>
+    <div class="tts-bar">
+      <button class="tts-btn play" id="play-${a.id}" onclick="ttsToggle(${a.id})">▶</button>
+      <button class="tts-btn" onclick="ttsStop(${a.id})" title="停止">■</button>
+      <span class="tts-status" id="st-${a.id}">▶ で読み上げ開始</span>
+      <div class="tts-speed">
+        速度 <input type="range" id="rate-${a.id}" min="0.5" max="1.2" step="0.1" value="0.85" oninput="updateRate(this,${a.id})">
+        <span id="rv-${a.id}">0.85×</span>
+      </div>
+    </div>
+    <div class="korean-body" id="body-${a.id}">${parasHTML}</div>
+    <div class="section-block">
+      <div class="section-label">핵심 어휘 · 표현</div>
+      <div class="vocab-grid">${vocabHTML}</div>
+    </div>
+    <div class="section-block">
+      <div class="section-label">네이티브 포인트</div>
+      <div class="native-body">
+        <strong>📌 ネイティブっぽさのポイント</strong>
+        <ul>${nativeHTML}</ul>
+      </div>
+    </div>
+  </div>`;
+}
+
+// 初期表示
+renderList();
+</script>
+</body>
+</html>
